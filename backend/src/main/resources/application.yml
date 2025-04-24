@@ -1,0 +1,67 @@
+#Connection pool
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 50MB
+
+  thymeleaf:
+    cache: false
+
+  datasource:
+    url: jdbc:mariadb://localhost:3305/storeapidb
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: storeapidbuser
+    password: storeapidbuser
+    hikari:
+      maximum-pool-size: 5   # 최대 커넥션 개수
+      minimum-idle: 2         # 최소 유휴 커넥션 개수
+      idle-timeout: 30000     # 커넥션이 유휴 상태로 유지되는 최대 시간 (밀리초)
+      max-lifetime: 1800000   # 커넥션의 최대 생명주기 (밀리초)
+      connection-timeout: 2000 # 커넥션 요청 시 최대 대기 시간 (밀리초)
+
+  #JPA Config
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: never
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            scope:
+              - account_email
+              - profile_nickname
+              - profile_image
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+            client-name: Kakao
+            client-authentication-method: client_secret_post
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+#로그 설정
+logging:
+  level:
+    org.gudo: INFO
+    org.springframework.security: TRACE
+
+org:
+  gudo:
+    upload: upload
